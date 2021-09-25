@@ -1,3 +1,4 @@
+__version__ = 'dev'
 ### N-Gram Extraction
 #### Get top n-grams function
 
