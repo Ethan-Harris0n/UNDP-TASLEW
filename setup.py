@@ -9,8 +9,17 @@ setup(name='UNDP CREW Twitter',
       author_email='eh0097@gmail.com',
       license='MIT',
       packages=find_packages(),
-      install_requires=['sklearn'
-              ],
+      install_requires=[
+          'pandas',
+          'sklearn',
+          'gensim',
+          'corextopic',
+          'huggingface',
+          'nltk'.
+          'collections',
+          'future',
+          'bulletins',
+             ],
         
         )
 

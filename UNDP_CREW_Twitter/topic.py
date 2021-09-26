@@ -19,7 +19,7 @@ from pewtils import is_not_null
 class TopicModel(object):
 
     """
-    Modified version of PewAnalytics code here (doesn't appear to be maintained any long) - 
+    Modified version of a class from PewAnalytics package here (doesn't appear to be maintained any longer) - 
     A wrapper around various topic modeling algorithms and libraries, intended to provide a standardized way to train \
     and apply models. When you initialize a ``TopicModel``, it will fit a vectorizer, and split the data into a train \
     and test set if ``holdout_pct`` is provided. For more information about the available implementations, refer to the \

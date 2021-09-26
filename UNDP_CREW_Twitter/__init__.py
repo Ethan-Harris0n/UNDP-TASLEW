@@ -1,6 +1,31 @@
 __version__ = 'dev'
 
 
+
+class Text_DF(object):
+    def __init__(self, df, text_column):
+        '''
+        initialize df with id and text_column
+        '''
+        self.df = df['text_column ']
+
+    def get_fulldf(old_df):
+        '''
+        returns merge of Text_DF with original dataframe
+        '''
+        self.df.merge(old_df)
+
+    def get_tfidf():
+        '''
+        creates tfidf matrix
+        '''
+        self.vectorizer = TfidfVectorizer(decode_error="ignore", **vectorizer_kwargs)
+        self.tfidf = self.vectorizer.fit_transform(self.df)
+
+
+
+
+
 '''Include twitter manipulation functions here and move ngram extraction to dedicated script'''
 # ### N-Gram Extraction
 # #### Get top n-grams function
