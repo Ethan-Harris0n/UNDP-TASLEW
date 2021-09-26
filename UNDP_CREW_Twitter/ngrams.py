@@ -17,7 +17,7 @@ def get_ngrams(data, text,  n=5, ngram=2, varname='bigrams'):
         - ngram for range of ngrams to extract - currently only supports full factorial (e.g. 2 = 1 an 2 ngrams)
     '''  
     pop_bigrams = extract_ngrams(text, n, ngram)
-    data[varname] = data.text.apply(lambda x:(add_ngrams(x,pop_bigrams)))
+    data[varname] = data.text.apply(lambda x:(add_ngrams(x,pop_bigrams))) # inefficient - need to convert to list comprehension
     ngramdf = data.explode(varname)
     ngramdf = ngramdf[f'{varname}']
     return ngramdf
@@ -51,6 +51,7 @@ def extract_ngrams(corpus, n=5, ngram=2):
 
 def add_ngrams(x, ngrams):
     '''
+    Inefficient - OPTIMIZE!!!
     Helper function for adding ngrams to associated text in a lambda call  /
     (likely inefficient but not worth doing it via another process at this stage)
     '''

@@ -1,4 +1,9 @@
-#### Function to extract TFIDF values
+
+'''
+Next steps:
+Create function so custom tifid transformer can be passed in
+'''
+
 #### Function to extract TFIDF values
 ## SKlearn - Needed for vectorization
 from sklearn.feature_extraction.text import CountVectorizer
@@ -50,11 +55,12 @@ def extract_tfidf_keywords(data, column, nwords, varname='keywords', wordtype=Tr
 
 
 
-### TF-IDF Core Functions
+### TF-IDF Helper Functions
 #### Function to sort scores pulled from a stack overflow post
 def sort_scores(matrix):
     tuples = zip(matrix.col, matrix.data)
     return sorted(tuples, key=lambda x: (x[1], x[0]), reverse=True)
+
 
 #### Function to get feature names and TFIDF score of top n items
 def extract_topn_from_vector(feature_names, sorted_items, topn=10):
