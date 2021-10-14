@@ -1,0 +1,8 @@
+pandas
+sklearn
+gensim
+corextopic
+huggingface
+nltk
+future
+pandas_flavor

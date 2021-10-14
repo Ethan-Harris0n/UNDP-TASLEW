@@ -1,4 +1,3 @@
-
 '''Include twitter manipulation functions here and move ngram extraction to dedicated script'''
 ### N-Gram Extraction
 #### Get top n-grams function
