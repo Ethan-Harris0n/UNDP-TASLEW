@@ -84,14 +84,15 @@ def extract_topn_from_vector(feature_names, sorted_items, topn=10):
 #### Core Methods ####
 '''
 Many of these use pandas_flavor as a decortator to extend pandas - i considered making a custom text dataframe class or creating a new set of class methods for each core function.
-However, I believe this to be the most simplistic solution and therefore the best from an interprebility standpoint
+However, I believe this to be the most simplistic solution and therefore the best from a replicabilibility standpoint
 '''
+#%%
 @pf.register_dataframe_method
 def get_text_df(df, col):
     """reduce dataframe to index and column to be analyzed"""
     return df[[col]]
 
-
+#%%
 @pf.register_dataframe_method
 def get_fulldf(df, old_df):
         '''
@@ -100,7 +101,15 @@ def get_fulldf(df, old_df):
         remerge = df.merge(old_df)
         return remerge
 
-
+#%%
+@pf.register_dataframe_method
+def get_tfidf(df, old_df):
+        '''
+        returns a term-frequency-i
+        '''
+        remerge = df.merge(old_df)
+        return remerge
+#%%
 @pf.register_dataframe_method
 def get_ngrams(df,  n=5, ngram=2, varname='ngrams'):
     '''
@@ -118,7 +127,7 @@ def get_ngrams(df,  n=5, ngram=2, varname='ngrams'):
     return ngramdf
 
 
-
+#%%
 '''
 Next steps:
 - Create function so custom tifid transformer can be passed in
@@ -163,3 +172,94 @@ def get_keywords_tfidf(df, nwords, varname='keywords', wordtype=True):
     else:
         keywords_df.set_index('id',inplace=True)
         return keywords_df
+#%%
+### Under Development - Vectorizer Class ###
+class Vectorize_Dataframe(object):
+    '''
+    Takes a df and collumn of text as input and converts it to either a count vectorized or tfidf matrix
+    '''
+    def __init__(self, df, text_column, vectorizer='tfidf', **vectorizer_kwargs):
+        vecs = ['tfidf', 'cv']
+        self.corpus = df
+        self.text_column = text_column
+        if vectorizer == 'tfidf':
+            self.vectorizer = TfidfVectorizer(decode_error="ignore", **vectorizer_kwargs)
+            self.tfidf = self.vectorizer.fit_transform(df[text_column])
+        if vectorizer == 'countvectorizer':
+            self.vectorizer = CountVectorizer(**vectorizer_kwargs)
+            self.cv = self.vectorizer.fit_transform(df[text_column])
+        else:
+            raise Exception (
+                f'You inputted an invalid option for the vectorizer parameter please specify one of the following: {vecs}')
+# %%
+    def find_related_keywords(self, keyword, n=25):
+        """
+        Given a particular keyword, looks for related terms in the corpus using mutual information.
+        :param keyword: The keyword to use
+        :type keyword: str
+        :param n: Number of related terms to return
+        :type n: int
+        :return: Terms associated with the keyword
+        :rtype: list
+        Usage::
+            >>> tdf.find_related_keywords("war")[:2]
+            ['war', 'peace']
+            >>> tdf.find_related_keywords("economy")[:2]
+            ['economy', 'expenditures']
+        """
+
+        self.corpus["temp"] = (
+            self.corpus[self.text_column]
+            .str.contains(r"\b{}\b".format(keyword), re.IGNORECASE)
+            .astype(int)
+        )
+        mi = self.mutual_info("temp")
+        del self.corpus["temp"]
+
+        return list(mi[mi["MI1"] > 0].sort_values("MI1", ascending=False)[:n].index)
+
+#%%
+    def make_word_cooccurrence_matrix(
+            self, normalize=False, min_frequency=10, max_frequency=0.5
+        ):
+
+            """
+            Use to produce word co-occurrence matrices. Based on a helpful StackOverflow post:
+            https://stackoverflow.com/questions/35562789/how-do-i-calculate-a-word-word-co-occurrence-matrix-with-sklearn
+            :param normalize: If True, will be normalized
+            :type normalize: bool
+            :param min_frequency: The minimum document frequency required for a term to be included
+            :type min_frequency: int
+            :param max_frequency: The maximum proportion of documents containing a term allowed to include the term
+            :type max_frequency: int
+            :return: A matrix of (terms x terms) whose values indicate the number of documents in which two terms co-occurred
+            Usage::
+                >>> wcm = tdf.make_word_cooccurrence_matrix(min_frequency=25, normalize=True)
+                # Find the top cooccurring pair of words
+                >>> wcm.stack().index[np.argmax(wcm.values)]
+                ('protection', 'policy')
+            """
+
+            text = self.corpus[self.text_column]
+            cv = CountVectorizer(
+                ngram_range=(1, 1),
+                stop_words="english",
+                min_df=min_frequency,
+                max_df=max_frequency,
+            )
+            mat = cv.fit_transform(text)
+            mat[
+                mat > 0
+            ] = (
+                1
+            )  # this makes sure that we're counting number of documents words have in common \
+            # and not weighting by the frequency of one of the words in a single document, which can lead to spurious links
+            names = cv.get_feature_names()
+            mat = mat.T * mat  # compute the document-document matrix
+            if normalize:
+                diag = sp.diags(1.0 / mat.diagonal())
+                mat = diag * mat
+            mat.setdiag(0)
+            matrix = pd.DataFrame(data=mat.todense(), columns=names, index=names)
+
+            return matrix
