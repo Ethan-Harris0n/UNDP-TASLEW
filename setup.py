@@ -19,8 +19,9 @@ setup(name='UNDP CREW Twitter',
         #   'collections',
           'future',
         #   'bulletins',
-          'pandas_flavor'
-             ],
+          'pandas_flavor',
+          'corextopic',
+          'detoxify'],
         
         )
 

@@ -36,7 +36,6 @@ class SentimentModel(object):
 
     
         else:
-            return f"The model parameter you listed is not a valid input please select one of the following model paramters: {model_list}"
-
-    def test(self, **kwargs):
-        return filt
+            raise Exception(
+            f"The model parameter you listed is not a valid input please select one of the following model paramters: {model_list}"
+            )

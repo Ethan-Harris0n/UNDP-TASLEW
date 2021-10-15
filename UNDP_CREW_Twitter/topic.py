@@ -12,9 +12,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation, NMF
 from collections import defaultdict
 
-from pewtils import is_not_null
-
-
 # Next steps - add bert and lda visualization components
 class TopicModel(object):
 
@@ -599,3 +596,56 @@ class TopicModel(object):
             include_weights=include_weights, top_n=top_n
         ).items():
             print("{}: {}".format(i, ", ".join(topic)))
+
+
+
+
+
+
+
+#### Helper Functions ####
+def is_not_null(val, empty_lists_are_null=False, custom_nulls=None):
+
+    """
+    Checks whether the value is null, using a variety of potential string values, etc. The following values are always
+    considered null: ``numpy.nan, None, "None", "nan", "", " ", "NaN", "none", "n/a", "NONE", "N/A"``
+    :param val: The value to check
+    :param empty_lists_are_null: Whether or not an empty list or :py:class:`pandas.DataFrame` should be considered \
+    null (default=False)
+    :type empty_lists_are_null: bool
+    :param custom_nulls: an optional list of additional values to consider as null
+    :type custom_nulls: list
+    :return: True if the value is not null
+    :rtype: bool
+    """
+
+    null_values = [None, "None", "nan", "", " ", "NaN", "none", "n/a", "NONE", "N/A"]
+    if custom_nulls:
+        null_values.extend(custom_nulls)
+    if type(val) == list:
+        if empty_lists_are_null and val == []:
+            return False
+        else:
+            return True
+    elif isinstance(val, pd.Series) or isinstance(val, pd.DataFrame):
+        if empty_lists_are_null and len(val) == 0:
+            return False
+        else:
+            return True
+    else:
+        try:
+            try:
+                good = val not in null_values
+                if good:
+                    try:
+                        try:
+                            good = not pd.isnull(val)
+                        except IndexError:
+                            good = True
+                    except AttributeError:
+                        good = True
+                return good
+            except ValueError:
+                return val.any()
+        except TypeError:
+            return not isinstance(val, None)

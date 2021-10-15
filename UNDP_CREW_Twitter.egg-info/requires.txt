@@ -6,3 +6,4 @@ huggingface
 nltk
 future
 pandas_flavor
+corextopic
