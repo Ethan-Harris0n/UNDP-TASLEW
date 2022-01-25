@@ -2,6 +2,7 @@ README.md
 setup.py
 UNDP_CREW_Twitter/__init__.py
 UNDP_CREW_Twitter/core.py
+UNDP_CREW_Twitter/hate.py
 UNDP_CREW_Twitter/ngrams.py
 UNDP_CREW_Twitter/sentiment.py
 UNDP_CREW_Twitter/topic.py

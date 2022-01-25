@@ -1,4 +1,4 @@
-Metadata-Version: 1.0
+Metadata-Version: 2.1
 Name: UNDP-CREW-Twitter
 Version: dev
 Summary: A package built by the Crisis Risk and Early Warning team to extract, transform, and analyze Twitter and other text-based data sources.
@@ -6,5 +6,7 @@ Home-page: UNKNOWN
 Author: Ethan Harrison
 Author-email: eh0097@gmail.com
 License: MIT
-Description: UNKNOWN
 Platform: UNKNOWN
+
+UNKNOWN
+
