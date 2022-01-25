@@ -1,4 +1,4 @@
-## UNDP_CREW_Twitter: A package built by the UNDP's Crisis Risk and Early Warning team to extract, transform, and analyze twitter (and other text data) for Early Warning purposes. 
+## TASLEW (Text Analysis and Social Listening for Early Warning): A package built by the UNDP's Crisis Risk and Early Warning team to extract, transform, and analyze twitter (and other text data) for Early Warning purposes. 
 
 
 ## The following repos provided valuable information and/or source code for many of the functions contained in this package
