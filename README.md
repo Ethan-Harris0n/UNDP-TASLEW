@@ -3,7 +3,7 @@
 A package built by the UNDP's Crisis Risk and Early Warning team to extract, transform, and analyze twitter (and other text data) for Early Warning purposes. 
 
 
-## The following repos provided valuable information and/or source code for many of the functions contained in this package
+#### The following repos provided valuable information and/or source code for many of the functions contained in this package
 - https://github.com/MichaelKim0407/tutorial-pip-package
 - https://github.com/heatherbaier/geograph
 - https://github.com/pewresearch/pewanalytics
