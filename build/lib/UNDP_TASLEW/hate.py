@@ -16,3 +16,5 @@ class HateSpeech_Model(object):
         if self.model == 'detoxify':
             model = Detoxify(**kwargs)
             self.df['detoxify_output'] = [model.predict(x)['detoxify_output'] for x in (self.df[self.text_col])]
+            # self.df['detoxify_output'] = [model.predict(x) for x in (self.df[self.text_col])]
+            # self.df['neg'] = [analyzer.polarity_scores(x)['neg'] for x in (self.df[self.text_col])]

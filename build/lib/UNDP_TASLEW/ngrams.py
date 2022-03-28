@@ -1,12 +1,12 @@
 '''Include twitter manipulation functions here and move ngram extraction to dedicated script'''
 ### N-Gram Extraction
 #### Get top n-grams function
-
+#%%
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 
-def get_ngrams(data, text,  n=5, ngram=2, varname='bigrams'):
+def get_ngrams(data, text,  n=5, ngram=2, varname='ngrams'):
     '''
     Main function to extract ngrams given a series of tweets via the two helpers belwo
     ARGS:
@@ -22,7 +22,7 @@ def get_ngrams(data, text,  n=5, ngram=2, varname='bigrams'):
     return ngramdf
 
 
-
+#%%
 def extract_ngrams(corpus, n=5, ngram=2):
     '''
     Helper function to vectorize and extracts ngrams based on provided corpus 
@@ -47,7 +47,7 @@ def extract_ngrams(corpus, n=5, ngram=2):
     ngrams = pd.DataFrame(words_freq[:n])
     return ngrams
 # Check if words_freq is same as df to list
-
+#%%
 def add_ngrams(x, ngrams):
     '''
     Inefficient - OPTIMIZE!!!
@@ -60,3 +60,4 @@ def add_ngrams(x, ngrams):
         if g in x:
             ls.append(g)
     return ls
+# %%

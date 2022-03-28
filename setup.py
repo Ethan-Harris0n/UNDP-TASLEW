@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
-from UNDP_CREW_Twitter import __version__
+from UNDP_TASLEW import __version__
 
-setup(name='UNDP CREW Twitter',
+setup(name='UNDP_TASLEW',
       version=__version__,
       description='A package built by the Crisis Risk and Early Warning team to extract, transform, and analyze Twitter and other text-based data sources.',
       url='',

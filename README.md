@@ -1,7 +1,9 @@
-## UNDP_CREW_Twitter: A package built by the UNDP's Crisis Risk and Early Warning team to extract, transform, and analyze twitter (and other text data) for Early Warning purposes. 
+## TASLEW: Text Analysis and Social Listening for Early Warning
+
+A package built by the UNDP's Crisis Risk and Early Warning team to extract, transform, and analyze text data for Early Warning purposes. 
 
 
-## The following repos provided valuable information and/or source code for many of the functions contained in this package
+## The following repos provided information and/or source code for many of the functions contained in this package
 - https://github.com/MichaelKim0407/tutorial-pip-package
 - https://github.com/heatherbaier/geograph
 - https://github.com/pewresearch/pewanalytics
@@ -29,12 +31,13 @@ The first two methods here can be thought of as an implmentation of a relational
 |----------|-------------|
 | `get_keywords_tfidf`  | Extracts most relevant keywords from datafram using TF-IDF  |
 | `get_ngrams`  | Extracts most relevant ngrams from dataframe using TF-IDF  |
-| `zero_shot`  | Hugging face pipeline Unsupervised classification of tweets using deep learning |
-| `get_topics`  | Generate topic-analysis of tweets using Latent-Derilicht Allocation|
-| `get_sentiment`  | Calculate the sentiment of tweets using Facebook's Vadar or NLP's|
-| `Identify_HateSpeech`  | Calculate liklihood for hate-speech using Google's detoxify algorithim|
+| `zero_shot`  | Hugging face pipeline implementation for unsupervised classification of text |
+| `get_topics`  | Generate topic-analysis of text using a variety of methods (Latent-Derilicht Allocation, Correlation Explanation, Bert, etc.) |
+| `get_sentiment`  | Calculate the sentiment of tweets using Facebook's Vadar or Flair|
+| `Identify_HateSpeech`  | Classify probability of text constuting hate-speech using unityAI's detoxify algorithim|
 
 
+#### Databricks
 #### Twitter Manipulation Methods
 | Function | Description |
 |----------|-------------|

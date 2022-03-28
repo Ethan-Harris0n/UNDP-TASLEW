@@ -1,0 +1,15 @@
+README.md
+setup.py
+UNDP_TASLEW/__init__.py
+UNDP_TASLEW/core.py
+UNDP_TASLEW/databricks.py
+UNDP_TASLEW/hate.py
+UNDP_TASLEW/ngrams.py
+UNDP_TASLEW/sentiment.py
+UNDP_TASLEW/topic.py
+UNDP_TASLEW/zeroshot.py
+UNDP_TASLEW.egg-info/PKG-INFO
+UNDP_TASLEW.egg-info/SOURCES.txt
+UNDP_TASLEW.egg-info/dependency_links.txt
+UNDP_TASLEW.egg-info/requires.txt
+UNDP_TASLEW.egg-info/top_level.txt
