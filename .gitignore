@@ -1,6 +1,5 @@
 .DS_Store
-UNDP_CREW_Twitter/__pycache__/
+UNDP_CREW_Twitter/__pycache__/__init__.cpython-38.pyc
 UNDP_CREW_Twitter/__pycache__/core_funcs.cpython-38.pyc
 UNDP_CREW_Twitter/__pycache__/core.cpython-38.pyc
 UNDP_CREW_Twitter/__pycache__/TextDataframe.cpython-38.pyc
-UNDP_CREW_Twitter/__pycache__/__init__.cpython-39.pyc
