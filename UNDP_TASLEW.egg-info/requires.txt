@@ -2,7 +2,7 @@ pandas
 sklearn
 gensim
 corextopic
-huggingface
+transformers
 nltk
 future
 pandas_flavor

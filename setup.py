@@ -14,14 +14,15 @@ setup(name='UNDP_TASLEW',
           'sklearn',
           'gensim',
           'corextopic',
-          'huggingface',
+          'transformers',
           'nltk',
         #   'collections',
           'future',
         #   'bulletins',
           'pandas_flavor',
           'corextopic',
-          'detoxify'],
+          'detoxify',
+          'translate'],
         
         )
 

@@ -1,6 +1,6 @@
 ## TASLEW: Text Analysis and Social Listening for Early Warning
 
-A package built by the UNDP's Crisis Risk and Early Warning team to extract, transform, and analyze text data for Early Warning purposes. 
+A package built by the UNDP's Crisis Risk and Early Warning team to extract, transform, and analyze text data for Early Warning purposes.
 
 
 ## The following repos provided information and/or source code for many of the functions contained in this package
@@ -12,22 +12,32 @@ A package built by the UNDP's Crisis Risk and Early Warning team to extract, tra
 
 ### Summary of methods
 
-An itemized list of methods can be found in the tables below. Many of these functions take a twitter json as input and output a 1 to many mapping with two columsn (id, [analysis output of interest e.g. keywords])
+An itemized list of methods can be found in the tables below. Many of these functions take a dataframe and column of text as inputs and output a dataframe constituting of the original dataframe's index and outputted column(s) produced by the method that was called.
 
 
-#### General Text DataFrame Methods
-The first two methods here can be thought of as an implmentation of a relational database. This enables memory efficent analysis, complexity of function definitions, and reduces the number of parameters the user has to input for the different analysis methods this package contains.
+#### Generic Text DataFrame Methods
+.
 | Function | Description |
 |----------|-------------|
-| `get_text_df`  | Preps a dataframe for analysis by reducing it to only its unique ID and text to be analyzed |
-| `get_original_df`  | Merges current text dataframe to original dataframe based on common ID |
-| `find_related_keywords`  | Takes keywords or a list of keywords as input and produces a list of related keywords - useful for lexicon building and expansion|
+| `prep_text_df`  | Preps a dataframe for analysis by reducing it to only its unique ID and text to be analyzed |
+| `get_original_df`  | Merges current text dataframe to original dataframe based on a common ID |
+
 | `find_related_keywords`  | Takes keywords or a list of keywords as input and produces a list of related keywords - useful for unsupervised lexicon building and expansion|
 | `make_word_cooccurrence_matrix` | Generates a co-iccurence matrix for a inputted document - useful for unsupervised lexicon building and expansion.
 
 
 #### General Text Analysis
-| Function | Description |
+##### Topic Modeling
+Generate topic-analysis of text using a variety of methods (Latent-Derilicht Allocation, Correlation Explanation, Bert, etc.) |
+##### Text Classification
+This is really just one method but added it as a module to improve ease in application. Zero Shot is an implementation of Hugging Face's Zero Shot Classifcation framework originating from this blog post. 
+##### Sentiment Analysis
+Calculate Sentiment via a number of frameworks including Facebook's Vader, Flair,etc.  
+##### Hate-Speech Classification
+Module devoted to Hate-Speech Classification. Currently this only includes Detoxify from Unity-AI's framework.
+
+
+| func | Description |
 |----------|-------------|
 | `get_keywords_tfidf`  | Extracts most relevant keywords from datafram using TF-IDF  |
 | `get_ngrams`  | Extracts most relevant ngrams from dataframe using TF-IDF  |
@@ -38,6 +48,17 @@ The first two methods here can be thought of as an implmentation of a relational
 
 
 #### Databricks
+A few helper functions used for our work on Databricks. These include helpers for interacting with APIs and writing data to Delta Tables.
+
+| Function | Description |
+|----------|-------------|
+| `get_last_id(table)`  | gets most recent tweet ID from specified delta table. Used automate scheduled API calls for data updation |
+| `get_last_timestamp(table)` | Extracts timestamp from most recent facebook post from specified delta table. Used to automate scheduled API calls for data updation  |
+| `convert_dates`  | This function converts twitter dates to python date objects  |
+| `dedupe_twitter` |  This function dedupes a list of tweets based on tweet ID.  |
+
+
+
 #### Twitter Manipulation Methods
 | Function | Description |
 |----------|-------------|
