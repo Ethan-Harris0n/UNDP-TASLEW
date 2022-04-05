@@ -23,6 +23,3 @@ class zeroshot(object):
             return self.df
         else:
             return self.df
-
-    def custom_model:
-        pass
