@@ -1,12 +1,24 @@
 # Libraries
 import pandas as pd
 import pandas_flavor as pf
+
+## Sklearn
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
+
+## Translation
 from translate import Translator
+
+## Nltk
 from nltk.corpus import stopwords
-import nltk
+from nltk.stem.porter import *
+from nltk.corpus import stopwords
+import re
+from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.stem.porter import PorterStemmer
+from nltk.tokenize import RegexpTokenizer
+from nltk.tag import perceptron
 
 
 #######
@@ -15,44 +27,6 @@ import nltk
 - all of these are built using the pandas_flavor library to integrate with pandas as addtional methods attached to the pandas dataframe class definition
 - this is done by including @pf.register_dataframe_method prior to any method / function definition
 '''
-
-######################################
-### Helper Functions ####
-
-# Function to sort scores pulled from a stack overflow post
-def sort_scores(matrix):
-    tuples = zip(matrix.col, matrix.data)
-    return sorted(tuples, key=lambda x: (x[1], x[0]), reverse=True)
-
-# Function to get feature names and TFIDF score of top n items
-def extract_topn_from_vector(feature_names, sorted_items, topn=10):
-    #use only topn items from vector
-    sorted_items = sorted_items[:topn]
-    score_vals = []
-    feature_vals = []
-    for idx, score in sorted_items:
-        fname = feature_names[idx]
-        #keep track of feature name and its corresponding score
-        score_vals.append(round(score, 3))
-        feature_vals.append(feature_names[idx])
-    #create a tuples of feature,score
-    #results = zip(feature_vals,score_vals)
-    results= {}
-    for idx in range(len(feature_vals)):
-        results[feature_vals[idx]]=score_vals[idx]
-    return results
-
-def extract_tfidf_keywords(matrix, matrix_names, nwords):
-    results=[]
-    for i in range(matrix.shape[0]):
-        #Current vector
-        curr_vector=matrix[i]
-        #sort the tf-idf vector by descending order of scores
-        sorted_items=sort_scores(curr_vector.tocoo())
-        #extract top n
-        keywords=extract_topn_from_vector(matrix_names,sorted_items,nwords)
-        results.append(keywords)
-    return results
 
 #####################################################################
 #####################################################################
@@ -85,86 +59,36 @@ def translate_text(df, df_col, lang="en"):
         should explore alternatives (are any of the hugging face models worth pursuing)
         '''
         translator= Translator(to_lang=lang)
-        df[f'text_{lang}']= [translator.translate(x) for x in (df['df_col'])]
+        df[f'text_{lang}']= [translator.translate(x) for x in (df[df_col])]
         return df
 
-
+#%%
+@pf.register_dataframe_method
+def clean_text(df, df_col, **preprocess_kwargs):
+    '''
+    preprocess for text
+    preprocess_kwargs:
+    - stop_words: list of stop words
+    - remove_tags=True: remove hashtags
+    - remove_special_characters=True: remove special characters
+    - remove_digits=True: removes digits
+    - stem=True: (default equals "False") Stems words via NLTK's porterstemmer
+    - lemmatize=True: lemmatizes words via NLTK's wordnet lemmatizer
+    '''
+    df_col = df[df_col].astype(str)
+#     df['text_clean'] = [pre_process(x,**preprocess_kwargs)['text_clean'] for x in (df_col)] 
+    df['text_clean'] = df_col.apply(lambda x:pre_process(x,**preprocess_kwargs))
+    return df
 
 #%%
-##### Keywords Module #################################################
-### Helper Functions ####
-# Function to sort scores pulled from a stack overflow post
-def sort_scores(matrix):
-    tuples = zip(matrix.col, matrix.data)
-    return sorted(tuples, key=lambda x: (x[1], x[0]), reverse=True)
-
-# Function to get feature names and TFIDF score of top n items
-def extract_topn_from_vector(feature_names, sorted_items, topn=10):
-    #use only topn items from vector
-    sorted_items = sorted_items[:topn]
-    score_vals = []
-    feature_vals = []
-    for idx, score in sorted_items:
-        fname = feature_names[idx]
-        #keep track of feature name and its corresponding score
-        score_vals.append(round(score, 3))
-        feature_vals.append(feature_names[idx])
-    #create a tuples of feature,score
-    #results = zip(feature_vals,score_vals)
-    results= {}
-    for idx in range(len(feature_vals)):
-        results[feature_vals[idx]]=score_vals[idx]
-    return results
-
-# Method
-#### Function to extract TFIDF values
-def extract_keywords(matrix, matrix_names, nwords):
-    results=[]
-    for i in range(matrix.shape[0]):
-        #Current vector
-        curr_vector=matrix[i]
-        #sort the tf-idf vector by descending order of scores
-        sorted_items=sort_scores(curr_vector.tocoo())
-        #extract top n
-        keywords=extract_topn_from_vector(matrix_names,sorted_items,nwords)
-        results.append(keywords)
-    return results
-
-############################################################
-
-#%%
-def find_related_keywords(self, keyword, n=25):
-        """
-        Given a particular keyword, looks for related terms in the corpus using mutual information.
-        :param keyword: The keyword to use
-        :type keyword: str
-        :param n: Number of related terms to return
-        :type n: int
-        :return: Terms associated with the keyword
-        :rtype: list
-        Usage::
-            >>> tdf.find_related_keywords("war")[:2]
-            ['war', 'peace']
-            >>> tdf.find_related_keywords("economy")[:2]
-            ['economy', 'expenditures']
-        """
-
-        self.corpus["temp"] = (
-            self.corpus[self.text_column]
-            .str.contains(r"\b{}\b".format(keyword), re.IGNORECASE)
-            .astype(int)
-        )
-        mi = self.mutual_info("temp")
-        del self.corpus["temp"]
-
-        return list(mi[mi["MI1"] > 0].sort_values("MI1", ascending=False)[:n].index)
-
-#%%
+@pf.register_dataframe_method
 def make_word_cooccurrence_matrix(
-            self, normalize=False, min_frequency=10, max_frequency=0.5
+            df, df_col, normalize=False, min_frequency=10, max_frequency=0.5
         ):
 
             """
+            Should probably convert this under vectorize class but given strict ngram requirements keeping here for now
+
             Use to produce word co-occurrence matrices. Based on a helpful StackOverflow post:
             https://stackoverflow.com/questions/35562789/how-do-i-calculate-a-word-word-co-occurrence-matrix-with-sklearn
             :param normalize: If True, will be normalized
@@ -181,7 +105,7 @@ def make_word_cooccurrence_matrix(
                 ('protection', 'policy')
             """
 
-            text = self.corpus[self.text_column]
+            text = df[df.col]
             cv = CountVectorizer(
                 ngram_range=(1, 1),
                 stop_words="english",
@@ -209,10 +133,7 @@ def make_word_cooccurrence_matrix(
 
 '''
 Next steps:
-- Create function so custom tifid transformer can be passed in
 - Include get keywords than allow type selection (e.g. bert versus TFIDF)
-- Create translate function
-- Add keywords extraction function
 '''
 
 
@@ -290,8 +211,8 @@ class Vectorize_Dataframe(object):
             ['economy', 'expenditures']
         """
 
-        self.corpus["temp"] = (
-            self.corpus[self.text_column]
+        self.df["temp"] = (
+            self.df
             .str.contains(r"\b{}\b".format(keyword), re.IGNORECASE)
             .astype(int)
         )
@@ -300,51 +221,147 @@ class Vectorize_Dataframe(object):
 
         return list(mi[mi["MI1"] > 0].sort_values("MI1", ascending=False)[:n].index)
 
-#%%
-    def make_word_cooccurrence_matrix(
-            self, normalize=False, min_frequency=10, max_frequency=0.5
-        ):
 
-            """
-            PEW
-            Use to produce word co-occurrence matrices. Based on a helpful StackOverflow post:
-            https://stackoverflow.com/questions/35562789/how-do-i-calculate-a-word-word-co-occurrence-matrix-with-sklearn
-            :param normalize: If True, will be normalized
-            :type normalize: bool
-            :param min_frequency: The minimum document frequency required for a term to be included
-            :type min_frequency: int
-            :param max_frequency: The maximum proportion of documents containing a term allowed to include the term
-            :type max_frequency: int
-            :return: A matrix of (terms x terms) whose values indicate the number of documents in which two terms co-occurred
-            Usage::
-                >>> wcm = tdf.make_word_cooccurrence_matrix(min_frequency=25, normalize=True)
-                # Find the top cooccurring pair of words
-                >>> wcm.stack().index[np.argmax(wcm.values)]
-                ('protection', 'policy')
-            """
 
-            text = self.corpus[self.text_column]
-            cv = CountVectorizer(
-                ngram_range=(1, 1),
-                stop_words="english",
-                min_df=min_frequency,
-                max_df=max_frequency,
-            )
-            mat = cv.fit_transform(text)
-            mat[
-                mat > 0
-            ] = (
-                1
-            )  # this makes sure that we're counting number of documents words have in common \
-            # and not weighting by the frequency of one of the words in a single document, which can lead to spurious links
-            names = cv.get_feature_names()
-            mat = mat.T * mat  # compute the document-document matrix
-            if normalize:
-                diag = sp.diags(1.0 / mat.diagonal())
-                mat = diag * mat
-            mat.setdiag(0)
-            matrix = pd.DataFrame(data=mat.todense(), columns=names, index=names)
+##### Helpers #####
 
-            return matrix
+def pre_process(text, remove_tags=True, remove_special_characters=True, 
+                remove_digits=True, lemmatize=True, stem=False):
+                
+                # Stop words
+                stop_words = set(stopwords.words("english"))
+                # Raise value error if try to lemmatize and stem
+                if lemmatize==True & stem==True:
+                        raise ValueError('Please set stem or lemmatize arguement to "False"')
+                
+                # lowercase
+                text=text.lower()
+                
+                if remove_tags==True: # for keyword extraction
+                        #remove tags
+                        text = re.sub("#+","", text)
 
-# %%
+                if remove_special_characters==True:
+                        # remove special characters
+                        text=re.sub("([^\w#])+"," ",text)
+                
+                if remove_digits==True:
+                        # remove digits
+                        text=re.sub("(\\d)+"," ",text)
+
+                
+                if stem==True:
+                        #convert to list
+                        text = text.split()
+                        #stem
+                        ps=PorterStemmer()
+                        text = [ps.stem(word) for word in text if not word in  
+                        stop_words] 
+                        text = " ".join(text)
+                
+                if lemmatize==True:
+                        #convert to list
+                        text = text.split()
+                        #Lemmatisation
+                        lem = WordNetLemmatizer()
+                        text = [lem.lemmatize(word) for word in text if not word in  
+                                stop_words] 
+                        text = " ".join(text)
+                return text
+
+
+##### Keyword Helpers #################################################
+# Function to sort scores pulled from a stack overflow post
+def sort_scores(matrix):
+    tuples = zip(matrix.col, matrix.data)
+    return sorted(tuples, key=lambda x: (x[1], x[0]), reverse=True)
+
+# Function to get feature names and TFIDF score of top n items
+def extract_topn_from_vector(feature_names, sorted_items, topn=10):
+    #use only topn items from vector
+    sorted_items = sorted_items[:topn]
+    score_vals = []
+    feature_vals = []
+    for idx, score in sorted_items:
+        fname = feature_names[idx]
+        #keep track of feature name and its corresponding score
+        score_vals.append(round(score, 3))
+        feature_vals.append(feature_names[idx])
+    #create a tuples of feature,score
+    #results = zip(feature_vals,score_vals)
+    results= {}
+    for idx in range(len(feature_vals)):
+        results[feature_vals[idx]]=score_vals[idx]
+    return results
+
+# Method
+#### Function to extract TFIDF values
+def extract_keywords(matrix, matrix_names, nwords):
+    results=[]
+    for i in range(matrix.shape[0]):
+        #Current vector
+        curr_vector=matrix[i]
+        #sort the tf-idf vector by descending order of scores
+        sorted_items=sort_scores(curr_vector.tocoo())
+        #extract top n
+        keywords=extract_topn_from_vector(matrix_names,sorted_items,nwords)
+        results.append(keywords)
+    return results
+
+############################################################
+
+
+### Helpers pulled from pewanalytics !!! - https://github.com/pewresearch/pewtils/blob/main/pewtils/__init__.py
+# Do we want to do this? Leave as last resot
+def is_not_null(val, empty_lists_are_null=False, custom_nulls=None):
+
+    """
+    Checks whether the value is null, using a variety of potential string values, etc. The following values are always
+    considered null: ``numpy.nan, None, "None", "nan", "", " ", "NaN", "none", "n/a", "NONE", "N/A"``
+    :param val: The value to check
+    :param empty_lists_are_null: Whether or not an empty list or :py:class:`pandas.DataFrame` should be considered \
+    null (default=False)
+    :type empty_lists_are_null: bool
+    :param custom_nulls: an optional list of additional values to consider as null
+    :type custom_nulls: list
+    :return: True if the value is not null
+    :rtype: bool
+    Usage::
+        from core.py import is_not_null
+        >>> text = "Hello"
+        >>> is_not_null(text)
+        True
+    """
+
+    null_values = [None, "None", "nan", "", " ", "NaN", "none", "n/a", "NONE", "N/A"]
+    if custom_nulls:
+        null_values.extend(custom_nulls)
+    if type(val) == list:
+        if empty_lists_are_null and val == []:
+            return False
+        else:
+            return True
+    elif isinstance(val, pd.Series) or isinstance(val, pd.DataFrame):
+        if empty_lists_are_null and len(val) == 0:
+            return False
+        else:
+            return True
+    else:
+        try:
+            try:
+                good = val not in null_values
+                if good:
+                    try:
+                        try:
+                            good = not pd.isnull(val)
+                        except IndexError:
+                            good = True
+                    except AttributeError:
+                        good = True
+                return good
+            except ValueError:
+                return val.any()
+        except TypeError:
+            return not isinstance(val, None)
+
+

@@ -8,3 +8,4 @@ future
 pandas_flavor
 corextopic
 detoxify
+translate

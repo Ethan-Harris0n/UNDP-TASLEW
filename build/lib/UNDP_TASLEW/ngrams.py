@@ -1,26 +1,13 @@
-'''Include twitter manipulation functions here and move ngram extraction to dedicated script'''
+'''
+Decided to move ngram extraction to dedicated script for now
+eventually this should be integrated as a method in the vectorizer class
+'''
 ### N-Gram Extraction
 #### Get top n-grams function
 #%%
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-
-def get_ngrams(data, text,  n=5, ngram=2, varname='ngrams'):
-    '''
-    Main function to extract ngrams given a series of tweets via the two helpers belwo
-    ARGS:
-        - data = the twitter dataframe
-        - text = column with text for keywords to be extracted
-        - n for number of keywords
-        - ngram for range of ngrams to extract - currently only supports full factorial (e.g. 2 = 1 an 2 ngrams)
-    '''  
-    pop_bigrams = extract_ngrams(text, n, ngram)
-    data[varname] = data.text.apply(lambda x:(add_ngrams(x,pop_bigrams))) # inefficient - need to convert to list comprehension
-    ngramdf = data.explode(varname)
-    ngramdf = ngramdf[f'{varname}']
-    return ngramdf
-
 
 #%%
 def extract_ngrams(corpus, n=5, ngram=2):
@@ -60,4 +47,23 @@ def add_ngrams(x, ngrams):
         if g in x:
             ls.append(g)
     return ls
+
+#####
+#%%
+def get_ngrams(data, text,  n=5, ngram=2, varname='ngrams'):
+    '''
+    Main function to extract ngrams given a series of tweets or text via the two helpers above
+    ARGS:
+        - data = the twitter dataframe
+        - text = column with text for keywords to be extracted
+        - n for number of keywords
+        - ngram for range of ngrams to extract - currently only supports full factorial (e.g. 2 = 1 an 2 ngrams)
+    '''  
+    pop_bigrams = extract_ngrams(text, n, ngram)
+    data[varname] = data.text.apply(lambda x:(add_ngrams(x,pop_bigrams))) # inefficient - need to convert to list comprehension
+    ngramdf = data.explode(varname)
+    ngramdf = ngramdf[f'{varname}']
+    return ngramdf
+
+
 # %%
