@@ -4,11 +4,10 @@ A package built by the UNDP's Crisis Risk and Early Warning team to extract, tra
 
 
 ## The following repos provided information and/or source code for many of the functions contained in this package
-- https://github.com/MichaelKim0407/tutorial-pip-package
-- https://github.com/heatherbaier/geograph
-- https://github.com/pewresearch/pewanalytics
-- https://github.com/dmbeskow/twitter_col
-
+- https://github.com/MichaelKim0407/tutorial-pip-package - for tutorial on building a python package
+- https://github.com/heatherbaier/ - for highlighting said tutorial above
+- https://github.com/pewresearch/pewanalytics - several of their co-iccurences / mutual information funcs (modified versions sourced from stack overflow) have been "canabalized" and wrapped under the vectorizer class - chose to do this instead of importing their package due to a number of install issues related to their build 
+- https://github.com/dmbeskow/twitter_col - wrapped a number of his excellent functions into a twitter module for ad-hoc data cleaning during data-extraction tasks on databricks
 
 ### Summary of methods
 

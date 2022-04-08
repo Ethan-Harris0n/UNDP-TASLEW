@@ -26,7 +26,7 @@ class TopicModel(object):
     :param text_col: Name of the column containing text
     :type text_col: str
     :param method: The topic model implementation to use. Options are: sklearn_lda, sklearn_nmf, gensim_lda, \
-    gensim_hdp, corex
+    gensim_hdp, corex 
     :type method: str
     :param num_topics: The number of topics to extract. Required for every method except ``gensim_hdp``.
     :type num_topics: int
