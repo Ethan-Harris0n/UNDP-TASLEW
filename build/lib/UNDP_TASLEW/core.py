@@ -88,6 +88,28 @@ def clean_text(df, df_col, **preprocess_kwargs):
     return df
 
 #%%
+# Should eventually move this under vectorizer class but keeping here for now
+@pf.register_dataframe_method
+def get_ngrams(df, text_var_string=None, n=5, ngram=2, varname='ngrams', **vectorizer_kwargs):
+    '''
+    Main function to extract ngrams given a series of tweets via the two helpers belwo
+    ARGS:
+        - df = the twitter dataframe
+        - text = column with text for keywords to be extracted (if none - selects first column in dataframe)
+        - n for number of keywords
+        - ngram for range of ngrams to extract - currently only supports full factorial (e.g. 2 = 1 an 2 ngrams)
+    '''  
+    if text_var_string==None:
+        pop_bigrams = extract_ngrams(df.iloc[:,0], n, ngram, **vectorizer_kwargs)
+        df[varname] = df.iloc[:,0].apply(lambda x:(add_ngrams(x,pop_bigrams))) # inefficient - need to convert to list comprehension
+    else:
+        pop_bigrams = extract_ngrams(df[text_var_string], n, ngram,**vectorizer_kwargs)
+        df[varname] = df[text_var_string].apply(lambda x:(add_ngrams(x,pop_bigrams))) # inefficient - need to convert to list comprehension
+    ngramdf = df.explode(varname)
+    ngramdf = ngramdf[f'{varname}']
+    return ngramdf
+
+#%%
 @pf.register_dataframe_method
 def make_word_cooccurrence_matrix(
             df, df_col, normalize=False, min_frequency=10, max_frequency=0.5
@@ -248,18 +270,20 @@ class Vectorize_Dataframe(object):
             :return: A :py:class:`pandas.DataFrame` of ngrams and various metrics about them, including mutual information
             """
 
-            keep_columns = [self.text_column, outcome_col]
+            keep_columns = [self.df.columns.values[0], outcome_col]
             if weight_col:
                 keep_columns.append(weight_col)
-            df = copy.deepcopy(self.corpus[keep_columns])
+            df = copy.deepcopy(self.df[keep_columns])
             if sample_size:
                 df = df.sample(n=sample_size).reset_index()
             if weight_col:
                 df = df.dropna().reset_index()
             else:
-                df = df.dropna(subset=[self.text_column, outcome_col]).reset_index()
+                df = df.dropna(subset=[self.df.columns.values[0], outcome_col]).reset_index()
+                print(df.head())
             y = df[outcome_col]
-            x = self.vectorizer.transform(df[self.text_column])
+            prep = df[df.columns.values[0]].astype(str)
+            x = self.vectorizer.transform(prep)
             weights = None
             if weight_col:
                 weights = df[weight_col]
@@ -268,7 +292,7 @@ class Vectorize_Dataframe(object):
                 y,
                 x,
                 weights=weights,
-                col_names=self.vectorizer.get_feature_names(),
+                col_names=self.vectorizer.get_feature_names_out(),
                 l=l,
                 normalize=normalize,
             )
@@ -357,6 +381,45 @@ def extract_keywords(matrix, matrix_names, nwords):
         keywords=extract_topn_from_vector(matrix_names,sorted_items,nwords)
         results.append(keywords)
     return results
+
+
+#### Helpers Ngrams #####
+def extract_ngrams(corpus, n=5, ngram=2, **vectorizer_kwargs):
+    '''
+    Helper function to vectorize and extracts ngrams based on provided corpus 
+    ARGS:
+        - corpus is the text of interest
+        - n is the number of keywords to extract
+        - ngram is the range of ngrams to extract - this is set to full-factorial (e.g. 2 by 2) ngrams) currently but can change later on. 
+    
+    '''
+    vec1 = CountVectorizer(ngram_range=(ngram,ngram), 
+           max_features=20000,**vectorizer_kwargs).fit(corpus)
+    ##TIFID RESULTS WERE POOR (Would need to likely filter by part of speech first)
+    # vec1 = CountVectorizer(ngram_range=(ngram,ngram), 
+    #         max_features=2000).fit(corpus)    
+    bag_of_words = vec1.transform(corpus)
+    sum_words = bag_of_words.sum(axis=0) 
+    print(sum_words)
+    words_freq = [(word, sum_words[0, idx]) for word, idx in     
+                  vec1.vocabulary_.items()]
+    words_freq =sorted(words_freq, key = lambda x: x[1], 
+                reverse=True)
+    ngrams = pd.DataFrame(words_freq[:n])
+    return ngrams
+# Check if words_freq is same as df to list
+def add_ngrams(x, ngrams):
+    '''
+    Inefficient - OPTIMIZE!!!
+    Helper function for adding ngrams to associated text in a lambda call  /
+    (likely inefficient but not worth doing it via another process at this stage)
+    '''
+    lsofgrams = ngrams[0].to_list()
+    ls = []
+    for g in lsofgrams:
+        if g in x:
+            ls.append(g)
+    return ls
 
 ############################################################
 
@@ -571,3 +634,5 @@ def compute_mutual_info(y, x, weights=None, col_names=None, l=0, normalize=True)
         df.index = col_names
 
     return df
+
+

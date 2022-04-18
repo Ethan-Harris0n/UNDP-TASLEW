@@ -11,54 +11,69 @@ A package built by the UNDP's Crisis Risk and Early Warning team to extract, tra
 
 ### Summary of methods
 
-An itemized list of methods can be found in the tables below. Many of these functions take a dataframe and column of text as inputs and output a dataframe constituting of the original dataframe's index and outputted column(s) produced by the method that was called.
+An itemized list of methods can be found in the tables below. Typically these functions take a dataframe and column of text as inputs and output a dataframe constituting of the original dataframe's index and outputted column(s) produced by the method that was called.
 
 
-#### Generic Text DataFrame Methods
+#### Generic Text DataFrame Methods (core.py)
+These are functions added via a pandas decorator. They thus can be called on any pandas dataframe e.g. `df.translate_text('column 1', to_lang='eng)` will automatically translate the text in column 1 of the dataframe to english.
 .
 | Function | Description |
 |----------|-------------|
-| `prep_text_df`  | Preps a dataframe for analysis by reducing it to only its unique ID and text to be analyzed |
-| `get_original_df`  | Merges current text dataframe to original dataframe based on a common ID |
+| `get_text_df`  | Preps a dataframe for analysis by reducing it to only its unique ID and text to be analyzed |
+
+| `get_fulldf`  | Simple wrapper for re-merging that I found myself using. Merges current text dataframe to original dataframe based on a common ID |
+
+| `translate_text`  |  Quick and dirty function for translating text using google translate's API|
+
+| `clean_text`  |  Function with several arguments (see core.py for more details) to clean text for text analysis|
+
+| `get_ngras`  |  Function with several arguments (see core.py for more details) to extract ngrams (phrases) from a text dataframe. Returns a long df with ngrams corresponding to the original index|
 
 | `find_related_keywords`  | Takes keywords or a list of keywords as input and produces a list of related keywords - useful for unsupervised lexicon building and expansion|
-| `make_word_cooccurrence_matrix` | Generates a co-iccurence matrix for a inputted document - useful for unsupervised lexicon building and expansion.
 
+| `make_word_cooccurrence_matrix` | Generates a co-iccurence matrix for a inputted document - useful for unsupervised lexicon building and expansion.|
 
-#### General Text Analysis
-##### Topic Modeling
-Generate topic-analysis of text using a variety of methods (Latent-Derilicht Allocation, Correlation Explanation, Bert, etc.) |
-##### Text Classification
-This is really just one method but added it as a module to improve ease in application. Zero Shot is an implementation of Hugging Face's Zero Shot Classifcation framework originating from this blog post. 
-##### Sentiment Analysis
-Calculate Sentiment via a number of frameworks including Facebook's Vader, Flair,etc.  
-##### Hate-Speech Classification
-Module devoted to Hate-Speech Classification. Currently this only includes Detoxify from Unity-AI's framework.
+##### The Vectorize Dataframe class
+The function `Vectorize_Dataframe` takes a dataframe and column of text as input and converts it to either a count vectorized or tf-idf matrix. Can feed additional keyword arguments from Sklearn's CountVectorizer or TfidfVectorizer to the constructor.
 
-
-| func | Description |
+Initializing this object than allows the user to call the following functions:
+| Function | Description |
 |----------|-------------|
-| `get_keywords_tfidf`  | Extracts most relevant keywords from datafram using TF-IDF  |
-| `get_ngrams`  | Extracts most relevant ngrams from dataframe using TF-IDF  |
-| `zero_shot`  | Hugging face pipeline implementation for unsupervised classification of text |
-| `get_topics`  | Generate topic-analysis of text using a variety of methods (Latent-Derilicht Allocation, Correlation Explanation, Bert, etc.) |
-| `get_sentiment`  | Calculate the sentiment of tweets using Facebook's Vadar or Flair|
-| `Identify_HateSpeech`  | Classify probability of text constuting hate-speech using unityAI's detoxify algorithim|
+| `get_keywords` | Extracts keywords from text based on tf-idf. There is also an additional keyword arguement that allows the user to filter for parts of speech (e.g. nouns). |
+
+| `find_related_keywords` | locates similar words in vector-space based on a user-specified keyword. Useful for expanding lexicons. |
 
 
-#### Databricks
-A few helper functions used for our work on Databricks. These include helpers for interacting with APIs and writing data to Delta Tables.
+#### Databricks Functions
+ These are a collection of helper functions used frequently on databricks (primarily for social-meda analysis). They include:
 
 | Function | Description |
 |----------|-------------|
-| `get_last_id(table)`  | gets most recent tweet ID from specified delta table. Used automate scheduled API calls for data updation |
+| `get_last_id(table)`  | Gets most recent tweet ID from user-specified delta table. Used automate scheduled API calls for data updation |
+
 | `get_last_timestamp(table)` | Extracts timestamp from most recent facebook post from specified delta table. Used to automate scheduled API calls for data updation  |
-| `convert_dates`  | This function converts twitter dates to python date objects  |
-| `dedupe_twitter` |  This function dedupes a list of tweets based on tweet ID.  |
+
+| `get_user_id` | Pulls the id of a twitter-user based on inputted twitter handle. Used primarily for data extraction tasks. |
+
+| `bearer_oauth` | Used for twitter authentication in API calls |
+
+| `connect_to_endpoint` | Used for twitter data extraction tasks |
+
+| `pull` | helper to call a twitter endpoint |
 
 
+##### Topic.py
+Generate topic-analysis of text using a variety of methods (Latent-Derilicht Allocation, Correlation Explanation, Bert, etc.) Cannibalized from Pew Research's repo - Pew Analytics|
 
-#### Twitter Manipulation Methods
+##### Zeroshot.py
+This is really just one method but added it as a module to improve ease in application. Zero Shot is an implementation of Hugging Face's Zero Shot Classifcation framework originating from the following blog post: https://joeddav.github.io/blog/2020/05/29/ZSL.html
+##### Sentiment.py
+This module enables one to calculate text entiment via a number of frameworks including Facebook's Vader, Flair,etc. 
+
+##### Hate.py
+Module devoted to Hate-Speech Classification. Currently this only includes Detoxify from Unity-AI's framework.
+
+#### Twitter Manipulation Methods (tweets.py)
 | Function | Description |
 |----------|-------------|
 | `check_tweet`  | Takes user objects and reverses them to create status objects  |

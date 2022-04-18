@@ -270,18 +270,20 @@ class Vectorize_Dataframe(object):
             :return: A :py:class:`pandas.DataFrame` of ngrams and various metrics about them, including mutual information
             """
 
-            keep_columns = [self.text_column, outcome_col]
+            keep_columns = [self.df.columns.values[0], outcome_col]
             if weight_col:
                 keep_columns.append(weight_col)
-            df = copy.deepcopy(self.corpus[keep_columns])
+            df = copy.deepcopy(self.df[keep_columns])
             if sample_size:
                 df = df.sample(n=sample_size).reset_index()
             if weight_col:
                 df = df.dropna().reset_index()
             else:
-                df = df.dropna(subset=[self.text_column, outcome_col]).reset_index()
+                df = df.dropna(subset=[self.df.columns.values[0], outcome_col]).reset_index()
+                print(df.head())
             y = df[outcome_col]
-            x = self.vectorizer.transform(df[self.text_column])
+            prep = df[df.columns.values[0]].astype(str)
+            x = self.vectorizer.transform(prep)
             weights = None
             if weight_col:
                 weights = df[weight_col]
@@ -290,7 +292,7 @@ class Vectorize_Dataframe(object):
                 y,
                 x,
                 weights=weights,
-                col_names=self.vectorizer.get_feature_names(),
+                col_names=self.vectorizer.get_feature_names_out(),
                 l=l,
                 normalize=normalize,
             )
