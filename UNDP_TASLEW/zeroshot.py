@@ -1,8 +1,7 @@
 from transformers import AutoTokenizer
 from transformers import AutoModelForSequenceClassification
 from transformers import pipeline
-
-
+import pandas as pd
 from transformers import pipeline
 
 class zeroshot(object):
