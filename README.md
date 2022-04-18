@@ -16,21 +16,15 @@ An itemized list of methods can be found in the tables below. Typically these fu
 
 #### Generic Text DataFrame Methods (core.py)
 These are functions added via a pandas decorator. They thus can be called on any pandas dataframe e.g. `df.translate_text('column 1', to_lang='eng)` will automatically translate the text in column 1 of the dataframe to english.
-.
+
 | Function | Description |
 |----------|-------------|
 | `get_text_df`  | Preps a dataframe for analysis by reducing it to only its unique ID and text to be analyzed |
-
 | `get_fulldf`  | Simple wrapper for re-merging that I found myself using. Merges current text dataframe to original dataframe based on a common ID |
-
 | `translate_text`  |  Quick and dirty function for translating text using google translate's API|
-
 | `clean_text`  |  Function with several arguments (see core.py for more details) to clean text for text analysis|
-
 | `get_ngras`  |  Function with several arguments (see core.py for more details) to extract ngrams (phrases) from a text dataframe. Returns a long df with ngrams corresponding to the original index|
-
 | `find_related_keywords`  | Takes keywords or a list of keywords as input and produces a list of related keywords - useful for unsupervised lexicon building and expansion|
-
 | `make_word_cooccurrence_matrix` | Generates a co-iccurence matrix for a inputted document - useful for unsupervised lexicon building and expansion.|
 
 ##### The Vectorize Dataframe class
@@ -40,7 +34,6 @@ Initializing this object than allows the user to call the following functions:
 | Function | Description |
 |----------|-------------|
 | `get_keywords` | Extracts keywords from text based on tf-idf. There is also an additional keyword arguement that allows the user to filter for parts of speech (e.g. nouns). |
-
 | `find_related_keywords` | locates similar words in vector-space based on a user-specified keyword. Useful for expanding lexicons. |
 
 
@@ -50,15 +43,10 @@ Initializing this object than allows the user to call the following functions:
 | Function | Description |
 |----------|-------------|
 | `get_last_id(table)`  | Gets most recent tweet ID from user-specified delta table. Used automate scheduled API calls for data updation |
-
 | `get_last_timestamp(table)` | Extracts timestamp from most recent facebook post from specified delta table. Used to automate scheduled API calls for data updation  |
-
 | `get_user_id` | Pulls the id of a twitter-user based on inputted twitter handle. Used primarily for data extraction tasks. |
-
 | `bearer_oauth` | Used for twitter authentication in API calls |
-
 | `connect_to_endpoint` | Used for twitter data extraction tasks |
-
 | `pull` | helper to call a twitter endpoint |
 
 
