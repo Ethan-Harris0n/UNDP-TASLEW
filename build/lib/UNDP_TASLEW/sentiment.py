@@ -18,13 +18,6 @@ class SentimentModel(object):
 
     def fit_model(self, **kwargs):
         model_list = ['vader']
-        # filt = self.df[self.text_col]
-        # if self.model == 'vadar':
-        #     analyzer = SentimentIntensityAnalyzer()
-        #     self.df['compound'] = [analyzer.polarity_scores(x)['compound'] for x in filt]
-        #     self.df['neg'] = [analyzer.polarity_scores(x)['neg'] for x in filt]
-        #     self.df['neu'] = [analyzer.polarity_scores(x)['neu'] for x in filt]
-        #     self.df['pos'] = [analyzer.polarity_scores(x)['pos'] for x in filt]
         if self.model == 'vadar':
             analyzer = SentimentIntensityAnalyzer()
             self.df['compound'] = [analyzer.polarity_scores(x)['compound'] for x in (self.df[self.text_col])]

@@ -108,7 +108,7 @@ class TopicModel(object):
         )
 
         self.vectorizer = self.vectorizer.fit(self.train_df[self.text_col])
-        self.ngrams = self.vectorizer.get_feature_names()
+        self.ngrams = self.vectorizer.get_feature_names_out()
         if self.method in ["gensim_lda", "gensim_hdp"]:
             self.train_features = self.get_features(self.train_df, keep_sparse=True)
             self.test_features = self.get_features(self.test_df, keep_sparse=True)

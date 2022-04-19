@@ -23,18 +23,25 @@ These are functions added via a pandas decorator. They thus can be called on any
 | `get_fulldf`  | Simple wrapper for re-merging that I found myself using. Merges current text dataframe to original dataframe based on a common ID |
 | `translate_text`  |  Quick and dirty function for translating text using google translate's API|
 | `clean_text`  |  Function with several arguments (see core.py for more details) to clean text for text analysis|
-| `get_ngras`  |  Function with several arguments (see core.py for more details) to extract ngrams (phrases) from a text dataframe. Returns a long df with ngrams corresponding to the original index|
+| `get_ngrams`  |  Function with several arguments (see core.py for more details) to extract ngrams (phrases) from a text dataframe. Returns a long df with ngrams corresponding to the original index|
 | `find_related_keywords`  | Takes keywords or a list of keywords as input and produces a list of related keywords - useful for unsupervised lexicon building and expansion|
 | `make_word_cooccurrence_matrix` | Generates a co-iccurence matrix for a inputted document - useful for unsupervised lexicon building and expansion.|
 
+
+
+
 ##### The Vectorize Dataframe class
-The function `Vectorize_Dataframe` takes a dataframe and column of text as input and converts it to either a count vectorized or tf-idf matrix. Can feed additional keyword arguments from Sklearn's CountVectorizer or TfidfVectorizer to the constructor.
+The function `Vectorize_Dataframe` takes a dataframe and column of text as input and converts it to either a count vectorized or tf-idf matrix.
+
+The user can also feed additional keyword arguments from Sklearn's CountVectorizer or TfidfVectorizer to the constructor.
 
 Initializing this object than allows the user to call the following functions:
 | Function | Description |
 |----------|-------------|
 | `get_keywords` | Extracts keywords from text based on tf-idf. There is also an additional keyword arguement that allows the user to filter for parts of speech (e.g. nouns). |
 | `find_related_keywords` | locates similar words in vector-space based on a user-specified keyword. Useful for expanding lexicons. |
+
+
 
 
 #### Databricks Functions
@@ -53,13 +60,22 @@ Initializing this object than allows the user to call the following functions:
 ##### Topic.py
 Generate topic-analysis of text using a variety of methods (Latent-Derilicht Allocation, Correlation Explanation, Bert, etc.) Cannibalized from Pew Research's repo - Pew Analytics|
 
+
+
 ##### Zeroshot.py
 This is really just one method but added it as a module to improve ease in application. Zero Shot is an implementation of Hugging Face's Zero Shot Classifcation framework originating from the following blog post: https://joeddav.github.io/blog/2020/05/29/ZSL.html
+
+
+
 ##### Sentiment.py
 This module enables one to calculate text entiment via a number of frameworks including Facebook's Vader, Flair,etc. 
 
+
+
 ##### Hate.py
 Module devoted to Hate-Speech Classification. Currently this only includes Detoxify from Unity-AI's framework.
+
+
 
 #### Twitter Manipulation Methods (tweets.py)
 | Function | Description |

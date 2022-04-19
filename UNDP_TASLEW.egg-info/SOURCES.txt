@@ -6,6 +6,7 @@ UNDP_TASLEW/databricks.py
 UNDP_TASLEW/hate.py
 UNDP_TASLEW/sentiment.py
 UNDP_TASLEW/topic.py
+UNDP_TASLEW/tweets.py
 UNDP_TASLEW/zeroshot.py
 UNDP_TASLEW.egg-info/PKG-INFO
 UNDP_TASLEW.egg-info/SOURCES.txt

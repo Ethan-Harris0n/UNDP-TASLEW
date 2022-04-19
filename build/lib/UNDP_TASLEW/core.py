@@ -25,6 +25,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import RegexpTokenizer
 from nltk.tag import perceptron
+import nltk
 
 #######
 '''
