@@ -5,3 +5,5 @@ UNDP_TASLEW/__pycache__/core.cpython-38.pyc
 UNDP_TASLEW/__pycache__/TextDataframe.cpython-38.pyc
 UNDP_TASLEW/__pycache__/*
 Test/MM.csv
+dist/UNDP_TASLEW-dev-py3-none-any.whl
+dist/UNDP_TASLEW-dev.tar.gz

@@ -14,7 +14,7 @@ class zeroshot(object):
             self.multilabel = multilabel
 
     def add_labels(self, new_labels):
-        self.labels.append(new_labels)
+        self.labels.append(list(new_labels))
 
     def fit_model(self):
         self.df['output'] = self.text_col.apply(lambda x:self.classifier(x, self.labels, multi_label=self.multilabel))
