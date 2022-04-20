@@ -56,22 +56,32 @@ These are simply a collection of helper functions used frequently on databricks 
 | `pull` | helper to call a twitter endpoint |
 
 
-##### Topic.py
+
+
+
+
+#### Topic.py
 Generates topic-analysis of text using a variety of methods (Latent-Derilicht Allocation, Correlation Explanation, Bert, etc.) Cannibalized from Pew Research's repo - Pew Analytics
 
 
 
-##### Zeroshot.py
+
+
+#### Zeroshot.py
 This is really just one method but added it as a module to improve ease in application. Zero Shot is an implementation of Hugging Face's Zero Shot Classifcation framework originating from the following blog post: https://joeddav.github.io/blog/2020/05/29/ZSL.html
 
 
 
-##### Sentiment.py
+
+
+#### Sentiment.py
 This module enables one to calculate text sentiment via a number of frameworks including Facebook's Vader, Flair,etc. 
 
 
 
-##### Hate.py
+
+
+#### Hate.py
 Module devoted to Hate-Speech Classification. Currently this only includes Detoxify from Unity-AI's framework.
 
 
