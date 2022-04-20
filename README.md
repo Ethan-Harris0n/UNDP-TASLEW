@@ -1,6 +1,6 @@
 ## TASLEW: Text Analysis and Social Listening for Early Warning
 
-This package contains a number of methods the UNDP's Crisis Risk and Early Warning team uses to extract, transform, and analyze text data for Early Warning purposes.
+This package contains a number of methods the UNDP's Crisis Risk and Early Warning team uses to extract, transform, and analyze text data for Early Warning purposes. See example notebook in the test folder for example implementations of some methods.
 
 
 ## The following repos provided information and/or source code for many of the functions contained in this package
