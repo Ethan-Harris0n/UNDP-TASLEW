@@ -21,7 +21,11 @@ class zeroshot(object):
         self.df['labels'] = self.df['output'].apply(lambda x: x.get('labels'))
         self.df['scores'] = self.df['output'].apply(lambda x: x.get('scores'))
         self.df.drop('output', axis=1, inplace=True)
-        output_df = self.df.apply(lambda x: x.explode() if x.name in ['labels','scores'] else x) # there's a more efficient way to do this / in the future probably should set up an if / else with multilabel user-specified argument
-        return output_df
+        self. output_df = self.df.apply(lambda x: x.explode() if x.name in ['labels','scores'] else x) # there's a more efficient way to do this / in the future probably should set up an if / else with multilabel user-specified argument
+        return self.output_df
+
+    def get_top_n(topics, n):
+        results = self.output_df.sort_values(by=['scores']).tail(n)
+        return results[[self.text_col,'scores']]
 
 
