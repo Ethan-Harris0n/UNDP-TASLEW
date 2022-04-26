@@ -1,11 +1,10 @@
 ## TASLEW: Text Analysis and Social Listening for Early Warning
 
-A package built by the UNDP's Crisis Risk and Early Warning team to extract, transform, and analyze text data for Early Warning purposes.
+This package contains a number of methods the UNDP's Crisis Risk and Early Warning team uses to extract, transform, and analyze text data for Early Warning purposes. See example notebook in the test folder for example implementations of some methods.
 
 
 ## The following repos provided information and/or source code for many of the functions contained in this package
-- https://github.com/MichaelKim0407/tutorial-pip-package - for tutorial on building a python package
-- https://github.com/heatherbaier/ - for highlighting said tutorial above
+- https://github.com/MichaelKim0407/tutorial-pip-package - for his great tutorial on building a python package
 - https://github.com/pewresearch/pewanalytics - several of their co-iccurences / mutual information funcs (modified versions sourced from stack overflow) have been "canabalized" and wrapped under the vectorizer class - chose to do this instead of importing their package due to a number of install issues related to their build 
 - https://github.com/dmbeskow/twitter_col - wrapped a number of his excellent functions into a twitter module for ad-hoc data cleaning during data-extraction tasks on databricks
 
@@ -35,7 +34,7 @@ The function `Vectorize_Dataframe` takes a dataframe and column of text as input
 
 The user can also feed additional keyword arguments from Sklearn's CountVectorizer or TfidfVectorizer to the constructor.
 
-Initializing this object than allows the user to call the following functions:
+Initializing this object than allows the user to call the following these following functions. Should eventually wrap ngrams functionality under this module as well as additional analysis methods using tf-idf/count-vectorized data as inputs:
 | Function | Description |
 |----------|-------------|
 | `get_keywords` | Extracts keywords from text based on tf-idf. There is also an additional keyword arguement that allows the user to filter for parts of speech (e.g. nouns). |
@@ -45,7 +44,7 @@ Initializing this object than allows the user to call the following functions:
 
 
 #### Databricks Functions
- These are a collection of helper functions used frequently on databricks (primarily for social-meda analysis). They include:
+These are simply a collection of helper functions used frequently on databricks (primarily for social-media ETL processes). They include:
 
 | Function | Description |
 |----------|-------------|
@@ -57,27 +56,39 @@ Initializing this object than allows the user to call the following functions:
 | `pull` | helper to call a twitter endpoint |
 
 
-##### Topic.py
-Generate topic-analysis of text using a variety of methods (Latent-Derilicht Allocation, Correlation Explanation, Bert, etc.) Cannibalized from Pew Research's repo - Pew Analytics|
 
 
 
-##### Zeroshot.py
+
+#### Topic.py
+Generates topic-analysis of text using a variety of methods (Latent-Derilicht Allocation, Correlation Explanation, Bert, etc.) Cannibalized from Pew Research's repo - Pew Analytics
+
+
+
+
+
+#### Zeroshot.py
 This is really just one method but added it as a module to improve ease in application. Zero Shot is an implementation of Hugging Face's Zero Shot Classifcation framework originating from the following blog post: https://joeddav.github.io/blog/2020/05/29/ZSL.html
 
 
 
-##### Sentiment.py
-This module enables one to calculate text entiment via a number of frameworks including Facebook's Vader, Flair,etc. 
+
+
+#### Sentiment.py
+This module enables one to calculate text sentiment via a number of frameworks including Facebook's Vader, Flair,etc. 
 
 
 
-##### Hate.py
+
+
+#### Hate.py
 Module devoted to Hate-Speech Classification. Currently this only includes Detoxify from Unity-AI's framework.
 
 
 
 #### Twitter Manipulation Methods (tweets.py)
+A number of useful methods for manipulating twitter data pulled from the repo highlighted above.
+
 | Function | Description |
 |----------|-------------|
 | `check_tweet`  | Takes user objects and reverses them to create status objects  |
